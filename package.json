@@ -1,0 +1,47 @@
+{
+  "name": "vetra",
+  "version": "0.1.0",
+  "description": "Vetra - Where ideas become real together",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "node prisma/seed.js",
+    "db:studio": "prisma studio",
+    "type-check": "tsc --noEmit"
+  },
+  "private": true,
+  "dependencies": {
+    "@prisma/client": "^6.18.0",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-dropdown-menu": "^2.1.16",
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "@stripe/react-stripe-js": "^5.3.0",
+    "@stripe/stripe-js": "^8.3.0",
+    "@tanstack/react-query": "^5.90.6",
+    "@trpc/client": "^11.7.1",
+    "@trpc/react-query": "^11.7.1",
+    "@trpc/server": "^11.7.1",
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.2.2",
+    "autoprefixer": "^10.4.21",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.552.0",
+    "next": "^14.2.33",
+    "next-auth": "^4.24.13",
+
+    "postcss": "^8.5.6",
+    "prisma": "^6.18.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "stripe": "^19.2.0",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^4.1.16",
+    "typescript": "^5.9.3",
+    "zod": "^4.1.12"
+  }
+}
