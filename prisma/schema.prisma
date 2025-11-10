@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -20,12 +20,12 @@ model Account {
   type               String
   provider           String
   providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
+  refresh_token      String?  
+  access_token       String?  
   expires_at         Int?
   token_type         String?
   scope              String?
-  id_token           String?  @db.Text
+  id_token           String?  
   session_state      String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -63,7 +63,7 @@ model User {
   name          String?
   handle        String?  @unique
   image         String?
-  bio           String?  @db.Text
+  bio           String?  
   
   // Vetting & Reputation
   isVetted      Boolean  @default(false)
@@ -122,6 +122,7 @@ model Skill {
 
   userSkills UserSkill[]
   projectSkills ProjectSkill[]
+  endorsements Endorsement[]
 }
 
 model Credential {
@@ -148,12 +149,13 @@ model Credential {
 model VettingApplication {
   id              String   @id @default(cuid())
   userId          String   @unique
-  summaryText     String?  @db.Text
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  summaryText     String?  
   evidenceLink    String?
   status          String   @default("Pending") // "Pending", "Approved", "Rejected"
   reviewedByUserId String?
   reviewedAt      DateTime?
-  reviewerNotes   String?  @db.Text
+  reviewerNotes   String?  
   submittedAt     DateTime @default(now())
   createdAt       DateTime @default(now())
 
@@ -164,12 +166,10 @@ model VettingApplication {
 model Endorsement {
   id        String   @id @default(cuid())
   endorserId String
-  endorseeId String
-  skillId   String
-  createdAt DateTime @default(now())
-
   endorser  User     @relation("endorser", fields: [endorserId], references: [id], onDelete: Cascade)
+  endorseeId String
   endorsee  User     @relation("endorsee", fields: [endorseeId], references: [id], onDelete: Cascade)
+  skillId   String
   skill     Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
 
   @@unique([endorserId, endorseeId, skillId])
@@ -186,7 +186,7 @@ model Project {
   id          String   @id @default(cuid())
   ownerId     String
   title       String
-  description String   @db.Text
+  description String   
   tags        String   // JSON array of tags
   status      String   @default("Open") // "Open", "In Progress", "Completed", "Archived"
   visibility  String   @default("PUBLIC") // "PUBLIC", "MEMBERS", "PRIVATE"
@@ -255,7 +255,7 @@ model Message {
   id        String   @id @default(cuid())
   threadId  String
   userId    String
-  content   String   @db.Text
+  content   String   
   createdAt DateTime @default(now())
 
   thread    Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
@@ -274,7 +274,7 @@ model Post {
   id        String   @id @default(cuid())
   userId    String
   projectId String?
-  content   String   @db.Text
+  content   String   
   tags      String?  // JSON array of tags
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -291,7 +291,7 @@ model Comment {
   id        String   @id @default(cuid())
   postId    String
   userId    String
-  content   String   @db.Text
+  content   String   
   createdAt DateTime @default(now())
 
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
@@ -314,7 +314,7 @@ model Invoice {
   platformFee     Int      // in cents
   status          String   @default("Draft") // "Draft", "Sent", "Paid", "Cancelled"
   stripeCheckoutId String?
-  description     String?  @db.Text
+  description     String?  
   dueDate         DateTime?
   paidAt          DateTime?
   createdAt       DateTime @default(now())
@@ -335,7 +335,7 @@ model Transaction {
   amount        Int      // in cents
   stripeId      String?  @unique
   status        String   @default("Pending") // "Pending", "Completed", "Failed"
-  metadata      String?  @db.Text // JSON
+  metadata      String?   // JSON
   createdAt     DateTime @default(now())
 
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -355,7 +355,7 @@ model AuditLog {
   action    String
   resource  String
   resourceId String
-  changes   String?  @db.Text // JSON
+  changes   String?   // JSON
   createdAt DateTime @default(now())
 
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
