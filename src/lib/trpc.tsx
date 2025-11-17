@@ -11,7 +11,14 @@ export const trpc = createTRPCReact<AppRouter>()
 export function TRPCReactProvider(props: {
   children: React.ReactNode
 }) {
-  const [queryClient] = useState(() => new QueryClient())
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 5 * 1000,
+      },
+    },
+  }))
+  
   const [trpcClient] = useState(() =>
     trpc.createClient({
       links: [
@@ -26,7 +33,7 @@ export function TRPCReactProvider(props: {
   )
 
   return (
-    <trpc.Provider client={trpcClient} state={undefined} queryClient={queryClient}>
+    <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         {props.children}
       </QueryClientProvider>

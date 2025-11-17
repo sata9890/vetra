@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
-import { SessionProvider } from 'next-auth/react'
-import { TRPCReactProvider } from '@/lib/trpc'
+import { Providers } from './providers'
 import '@/styles/globals.css'
 
 export const metadata: Metadata = {
@@ -14,13 +13,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <SessionProvider>
-          <TRPCReactProvider>
-            {children}
-          </TRPCReactProvider>
-        </SessionProvider>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   )

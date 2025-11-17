@@ -4,9 +4,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { ZodError } from 'zod'
 
-export const createTRPCContext = async (opts: {
-  headers: Headers
-}) => {
+export const createTRPCContext = async () => {
   const session = await getServerSession(authOptions)
   return {
     session,

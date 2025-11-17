@@ -8,7 +8,7 @@ const authRouter = router({
     return ctx.session?.user || null
   }),
   
-  logout: protectedProcedure.mutation(({ ctx }) => {
+  logout: protectedProcedure.mutation(() => {
     // NextAuth handles logout via signOut() on client
     return { success: true }
   }),
@@ -43,7 +43,7 @@ const profileRouter = router({
     }))
     .mutation(async ({ input, ctx }) => {
       return await ctx.prisma.user.update({
-        where: { id: ctx.session.user.id },
+        where: { id: (ctx.session.user as any).id },
         data: input,
       })
     }),
@@ -66,7 +66,7 @@ const profileRouter = router({
       
       return await ctx.prisma.userSkill.create({
         data: {
-          userId: ctx.session.user.id,
+          userId: (ctx.session.user as any).id,
           skillId: skill.id,
           expertiseLevel: input.expertiseLevel,
         },
@@ -83,9 +83,9 @@ const vettingRouter = router({
     }))
     .mutation(async ({ input, ctx }) => {
       return await ctx.prisma.vettingApplication.upsert({
-        where: { userId: ctx.session.user.id },
+        where: { userId: (ctx.session.user as any).id },
         create: {
-          userId: ctx.session.user.id,
+          userId: (ctx.session.user as any).id,
           summaryText: input.summaryText,
           evidenceLink: input.evidenceLink,
         },
@@ -100,7 +100,7 @@ const vettingRouter = router({
   getApplications: protectedProcedure.query(async ({ ctx }) => {
     // Only admins can view all applications
     const user = await ctx.prisma.user.findUnique({
-      where: { id: ctx.session.user.id },
+      where: { id: (ctx.session.user as any).id },
     })
     
     if (user?.trustScore! < 100) {
@@ -123,7 +123,7 @@ const vettingRouter = router({
         where: { id: input.applicationId },
         data: {
           status: input.status,
-          reviewedByUserId: ctx.session.user.id,
+          reviewedByUserId: (ctx.session.user as any).id,
           reviewedAt: new Date(),
           reviewerNotes: input.reviewerNotes,
         },
@@ -168,7 +168,7 @@ const projectsRouter = router({
     .mutation(async ({ input, ctx }) => {
       return await ctx.prisma.project.create({
         data: {
-          ownerId: ctx.session.user.id,
+          ownerId: (ctx.session.user as any).id,
           title: input.title,
           description: input.description,
           tags: JSON.stringify(input.tags),
@@ -197,7 +197,7 @@ const projectsRouter = router({
       return await ctx.prisma.projectMember.create({
         data: {
           projectId: input.projectId,
-          userId: ctx.session.user.id,
+          userId: (ctx.session.user as any).id,
           role: 'Member',
         },
       })
@@ -228,7 +228,7 @@ const postsRouter = router({
     .mutation(async ({ input, ctx }) => {
       return await ctx.prisma.post.create({
         data: {
-          userId: ctx.session.user.id,
+          userId: (ctx.session.user as any).id,
           content: input.content,
           tags: input.tags ? JSON.stringify(input.tags) : null,
         },
@@ -244,7 +244,7 @@ const postsRouter = router({
       return await ctx.prisma.comment.create({
         data: {
           postId: input.postId,
-          userId: ctx.session.user.id,
+          userId: (ctx.session.user as any).id,
           content: input.content,
         },
       })
@@ -255,14 +255,14 @@ const postsRouter = router({
 const billingRouter = router({
   getCredits: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findUnique({
-      where: { id: ctx.session.user.id },
+      where: { id: (ctx.session.user as any).id },
     })
     return { credits: user?.credits || 0 }
   }),
 
   getTransactions: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.transaction.findMany({
-      where: { userId: ctx.session.user.id },
+      where: { userId: (ctx.session.user as any).id },
       orderBy: { createdAt: 'desc' },
     })
   }),

@@ -31,13 +31,13 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session, user }) {
       if (session.user) {
-        session.user.id = user.id
+        (session.user as any).id = user.id
       }
       return session
     },
   },
   pages: {
-    signIn: '/auth/signin',
-    error: '/auth/error',
+    signIn: '/',
+    error: '/',
   },
 }
